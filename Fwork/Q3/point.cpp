@@ -1,104 +1,102 @@
-#include<iostream>
-#include<vector>
-#include<algorithm>
-#include <stdlib.h>
-#include <iomanip>
-#include <time.h>
-#include<ctime>
-#include<cstdlib>
+#include <iostream>
 #include <map>
+#include <iomanip>
+#include <cstdlib>
+#include <algorithm>
+#include <vector>
+#include <stdlib.h>
 #include <iterator>
+
 using namespace std;
 
-struct Point {
-    double x;
-    double y;
-    double z;
-}p1;
-
-Point initPoint (void);
-void printPoint(vector <Point>&); 
-double rands(void);
-bool zGT5 (Point) ;
-
-typedef map<int, Point > MiP;
-
-main(){
-
-	vector<Point> vectorr(20);
-	
- 
-	
-	generate(vectorr.begin() , vectorr.end(), initPoint);
-	
-
-	vector<int >key(20);
-
-	printPoint(vectorr);
-	
-	//transform
-	cout<<"*************"<<endl;
-		transform(vectorr.begin() , vectorr.end(),key.begin(),zGT5); 
-	cout<<"*************"<<endl;
-	
-	    
-	for (std::vector<int>::iterator it=key.begin(); it!=key.end(); ++it)
-    cout << *it <<" ";
-  
-	cout<<"*************"<<endl;
- 	
-	
-	
-	
-	
-		MiP maps;
-	for( int i = 0; i < key.size(); i++){
-		if(key[i]==1)
-		maps.insert(pair<int, Point>(key[i], vectorr[i]));
-		else
-		continue;
-	}
-	
-	
-for( map<int, Point>::iterator it= maps.begin(); it != maps.end(); it++)
+struct Point
 {
-	cout << it->first << ": " << it ->second.x << it ->second.y<< it ->second.z  << endl;
-}
+public:
+    double x, y, z;
+};
 
+vector<Point> points(20);
+void printVector(vector<Point> &);
+Point initPoint();
+bool zGT5(Point&);
+typedef map<int, Point> MiP;
 
-	
-}
+int main(int argc, char **argv)
+{
 
-Point initPoint (void){ 
-	p1.x=rands();
- 	p1.y=rands();
-	
-	p1.z=rands();
-	
-	return p1; 
-}
+    generate(points.begin(), points.end(), initPoint);
 
-double rands(void){
-	return (rand()%11);
-}
+    cout <<"Point Vector" << endl;
+    printVector(points);
 
-void printPoint(vector<Point> &vec){
-	cout<<setw(5)<<"X  "<<setw(5)<<"      Y"<<setw(5)<<"Z"<<endl;
-	
-	 for (int i = 0; i < vec.size(); i++) {
-       cout << vec[i].x<<setw(5) <<"    "<< vec[i].y<<"   "<<setw(5)<< vec[i].z<<endl;
+    vector<int> mask(20);
+    fill(mask.begin(), mask.end(), 0);
+
+    /*for (int i = 0; i < 20; i++)
+    {
+        if (points[i].z > 5)
+            mask[i] = 1;
+    }*/
+
+    // transform
+    transform(points.begin(), points.end(), mask.begin(), zGT5);
+
+    cout <<"Mask Vector" << endl;
+    for (int j = 0; j < points.size(); j++)
+    {
+        cout <<mask[j]<<" ";
     }
+    cout<<endl;
+
+    MiP maps;
+    cout<<endl;
+
+    // MiP::iterator it = maps.begin();
+    for (int i = 0; i < mask.size(); i++)
+    {
+        if (mask[i] == 1)
+            maps.insert(pair<int, Point>(i, points[i]));
+        else
+            continue;
+    }
+    
+
+    cout << "Point Map" << endl;
+    cout <<"Key\tX\tY\tZ" << endl;
+    for (MiP::iterator it = maps.begin(); it != maps.end(); it++)
+    {
+        cout << it->first << "\t" << it->second.x <<"\t"<< it->second.y <<"\t"<< it->second.z << endl;
+    }
+
+    return 0;
 }
 
+void printVector(vector<Point> &a)
+{
 
-bool zGT5 (Point a) {
-	 
-	if((a.z)>5) 
-	return 1; 
-	else
-	return 0;
-	
-	
+    cout << "X\tY\tZ" << endl;
+    for (int j = 0; j < points.size(); j++)
+    {
+        cout << a[j].x << "\t" << a[j].y << "\t" << a[j].z << endl;
+    }
+    cout<<endl;
 }
 
+Point initPoint()
+{
+    Point coord;
+    coord.x = (double)(rand() % 100) / 10.0;
+    coord.y = (double)(rand() % 100) / 10.0;
+    coord.z = (double)(rand() % 100) / 10.0;
 
+    return coord;
+}
+
+bool zGT5(Point &a)
+{
+
+    if (a.z > 5)
+        return true;
+    else
+        return false;
+}
